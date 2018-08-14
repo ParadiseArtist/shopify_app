@@ -14,6 +14,10 @@ module ShopifyApp
       authenticate
     end
 
+    def set_top_level_cookie
+      @login_url = login_url
+    end
+
     def callback
       if auth_hash
         login_shop
@@ -36,18 +40,27 @@ module ShopifyApp
 
     private
 
-    def authenticate      
+    def authenticate
       if sanitized_shop_name.present?
         session['shopify.omniauth_params'] = { shop: sanitized_shop_name }
-        if session['shopify.cookies_persist'] || !ShopifyApp.configuration.embedded_app?
-          redirect_to "#{main_app.root_path}auth/shopify"
+
+        if redirect_for_cookie_access?
+          fullpage_redirect_to set_top_level_cookie_path(shop: sanitized_shop_name)
         else
-          fullpage_redirect_to login_url
+          redirect_to "#{main_app.root_path}auth/shopify"
         end
       else
         flash[:error] = I18n.t('invalid_shop_url')
         redirect_to return_address
       end
+    end
+
+    def redirect_for_cookie_access?
+      return false unless ShopifyApp.configuration.embedded_app?
+      return false if referer_path == set_top_level_cookie_path
+      return false if session['shopify.cookies_persist']
+
+      true
     end
 
     def login_shop
@@ -63,6 +76,15 @@ module ShopifyApp
 
     def auth_hash
       request.env['omniauth.auth']
+    end
+
+    def referer_path
+      return unless request.referer
+
+      uri = URI(request.referer)
+      uri.path
+    rescue URI::InvalidURIError
+      nil
     end
 
     def shop_name

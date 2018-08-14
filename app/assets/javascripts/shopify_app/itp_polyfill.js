@@ -6,3 +6,13 @@ function shouldTriggerCookiePartitioning() {
   // TODO: Replace with library for checking user-agents
   return document.hasStorageAccess && isSafari && versionNumber >= 12;
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+  var continueElement = document.getElementById("continue-button");
+
+  if (shouldTriggerCookiePartitioning()) {
+    continueElement.style.display = 'inline';
+  } else {
+    window.top.location.href = continueElement.href;
+  }
+});

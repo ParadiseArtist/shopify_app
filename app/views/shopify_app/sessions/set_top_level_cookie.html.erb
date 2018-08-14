@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <style>
+    #continue-button {
+      display: none;
+    }
+  </style>
+  <base target="_top">
+  <title>Redirecting…</title>
+  <%= javascript_include_tag('shopify_app/itp_polyfill', crossorigin: 'anonymous', integrity: true) %>
+</head>
+<body>
+<%= link_to 'Continue', @login_url, :id => 'continue-button' %>
+</body>
+</html>
