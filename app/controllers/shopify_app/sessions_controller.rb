@@ -15,7 +15,7 @@ module ShopifyApp
     end
 
     def set_top_level_cookie
-      @login_url = login_url
+      @shop = sanitize_shop_param(params)
     end
 
     def callback

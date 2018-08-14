@@ -7,12 +7,20 @@ function shouldTriggerCookiePartitioning() {
   return document.hasStorageAccess && isSafari && versionNumber >= 12;
 }
 
+function setCookieAndRedirect() {
+  document.cookie = "shopify.cookies_persist=true";
+  window.location.href = window.shopOrigin + "/admin/apps/" + window.apiKey;
+
+  return false;
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   var continueElement = document.getElementById("continue-button");
 
   if (shouldTriggerCookiePartitioning()) {
     continueElement.style.display = 'inline';
+    continueElement.addEventListener('click', setCookieAndRedirect);
   } else {
-    window.top.location.href = continueElement.href;
+    setCookieAndRedirect();
   }
 });

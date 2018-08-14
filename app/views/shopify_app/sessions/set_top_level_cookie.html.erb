@@ -9,9 +9,17 @@
   </style>
   <base target="_top">
   <title>Redirecting…</title>
+
+  <script src="https://cdn.shopify.com/s/assets/external/app.js?<%= Time.now.strftime('%Y%m%d%H') %>"></script>
+
+  <script>
+    window.apiKey = "<%= ShopifyApp.configuration.api_key %>";
+    window.shopOrigin = "https://<%= @shop %>";
+  </script>
+
   <%= javascript_include_tag('shopify_app/itp_polyfill', crossorigin: 'anonymous', integrity: true) %>
 </head>
 <body>
-<%= link_to 'Continue', @login_url, :id => 'continue-button' %>
+<button id="continue-button">Continue</button>
 </body>
 </html>
