@@ -15,11 +15,12 @@ function setCookieAndRedirect() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  var continueElement = document.getElementById("continue-button");
+  if (document.hasStorageAccess) {
+    var itpContent = document.querySelector('#CookiePartitionPrompt');
+    itpContent.style.display = 'block';
 
-  if (shouldTriggerCookiePartitioning()) {
-    continueElement.style.display = 'inline';
-    continueElement.addEventListener('click', setCookieAndRedirect);
+    var button = document.querySelector('#AcceptCookies');
+    button.addEventListener('click', setCookieAndRedirect);
   } else {
     setCookieAndRedirect();
   }
