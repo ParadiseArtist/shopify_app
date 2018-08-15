@@ -62,7 +62,6 @@ module ShopifyApp
     def redirect_for_cookie_access?
       return false unless ShopifyApp.configuration.embedded_app?
       return false if params[:no_cookie_redirect]
-      return false if referer_path == set_top_level_cookie_path
       return false if session['shopify.cookies_persist']
 
       true
@@ -81,15 +80,6 @@ module ShopifyApp
 
     def auth_hash
       request.env['omniauth.auth']
-    end
-
-    def referer_path
-      return unless request.referer
-
-      uri = URI(request.referer)
-      uri.path
-    rescue URI::InvalidURIError
-      nil
     end
 
     def shop_name
