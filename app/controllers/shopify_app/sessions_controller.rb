@@ -46,8 +46,12 @@ module ShopifyApp
 
         if redirect_for_cookie_access?
           fullpage_redirect_to set_top_level_cookie_path(shop: sanitized_shop_name)
-        else
+        elsif session['shopify.top_level_oauth']
+          clear_top_level_oauth_cookie
           redirect_to "#{main_app.root_path}auth/shopify"
+        else
+          session['shopify.top_level_oauth'] = true
+          fullpage_redirect_to login_url(true)
         end
       else
         flash[:error] = I18n.t('invalid_shop_url')
@@ -57,6 +61,7 @@ module ShopifyApp
 
     def redirect_for_cookie_access?
       return false unless ShopifyApp.configuration.embedded_app?
+      return false if params[:no_cookie_redirect]
       return false if referer_path == set_top_level_cookie_path
       return false if session['shopify.cookies_persist']
 

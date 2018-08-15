@@ -11,6 +11,8 @@ module ShopifyApp
 
     def shopify_session
       if shop_session
+        clear_top_level_oauth_cookie
+
         begin
           ShopifyAPI::Base.activate_session(shop_session)
           yield
@@ -58,12 +60,20 @@ module ShopifyApp
       session[:shopify_user] = nil
     end
 
-    def login_url
+    def login_url(no_cookie_redirect = false)
       url = ShopifyApp.configuration.login_url
+      query_params = {}
 
       if params[:shop].present?
-        query = { shop: sanitized_params[:shop] }.to_query
-        url = "#{url}?#{query}"
+        query_params[:shop] = sanitized_params[:shop]
+      end
+
+      if no_cookie_redirect
+        query_params[:no_cookie_redirect] = true
+      end
+
+      if query_params.present?
+        url = "#{url}?#{query_params.to_query}"
       end
 
       url
@@ -103,6 +113,10 @@ module ShopifyApp
 
     def attempt_to_set_cookie
       session['shopify.cookies_persist'] = true
+    end
+
+    def clear_top_level_oauth_cookie
+      session.delete('shopify.top_level_oauth')
     end
   end
 end
