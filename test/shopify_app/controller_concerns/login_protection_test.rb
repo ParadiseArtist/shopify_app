@@ -89,6 +89,18 @@ class LoginProtectionTest < ActionController::TestCase
     end
   end
 
+  test '#shopify_session with Shopify session, clears top-level auth cookie' do
+    with_application_test_routes do
+      session['shopify.top_level_oauth'] = true
+      sess = stub(url: 'https://foobar.myshopify.com')
+      @controller.expects(:shop_session).returns(sess).at_least_once
+      ShopifyAPI::Base.expects(:activate_session).with(sess)
+
+      get :index, params: { shop: 'foobar' }
+      assert_nil session['shopify.top_level_oauth']
+    end
+  end
+
   test '#shopify_session with no Shopify session, redirects to the login url' do
     with_application_test_routes do
       get :index, params: { shop: 'foobar' }
