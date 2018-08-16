@@ -118,5 +118,9 @@ module ShopifyApp
     def clear_top_level_oauth_cookie
       session.delete('shopify.top_level_oauth')
     end
+
+    def set_top_level_oauth_cookie
+      session['shopify.top_level_oauth'] = true
+    end
   end
 end
