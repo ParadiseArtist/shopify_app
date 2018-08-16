@@ -66,7 +66,7 @@ module ShopifyApp
 
     def authenticate_at_top_level
       set_top_level_oauth_cookie
-      fullpage_redirect_to login_url(true)
+      fullpage_redirect_to login_url(no_cookie_redirect: true)
     end
 
     def authenticate_in_context?

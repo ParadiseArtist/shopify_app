@@ -57,7 +57,7 @@ module ShopifyApp
       session[:shopify_user] = nil
     end
 
-    def login_url(no_cookie_redirect = false)
+    def login_url(no_cookie_redirect: false)
       url = ShopifyApp.configuration.login_url
 
       query_params = {}
