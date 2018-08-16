@@ -13,8 +13,11 @@ module ShopifyApp
       @routes = ShopifyApp::Engine.routes
       ShopifyApp::SessionRepository.storage = ShopifyApp::InMemorySessionStore
       ShopifyApp.configuration = nil
+      ShopifyApp.configuration.embedded_app = true
 
       I18n.locale = :en
+
+      session['shopify.cookies_persist'] = true
     end
 
     test "#new should authenticate the shop if a valid shop param exists" do
@@ -222,7 +225,7 @@ module ShopifyApp
     end
 
     def assert_redirected_to_authentication(shop_domain, response)
-      auth_url = "/auth/shopify"
+      auth_url = "/login?no_cookie_redirect=true\\u0026shop=#{shop_domain}"
 
       assert_template 'shared/redirect'
       assert_select '[id=redirection-target]', 1 do |elements|
