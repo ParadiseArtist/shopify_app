@@ -15,7 +15,8 @@ module ShopifyApp
     end
 
     def enable_cookies
-      @shop = sanitize_shop_param(params)
+      @shop = sanitized_shop_name
+      render_invalid_shop_error unless @shop
     end
 
     def callback

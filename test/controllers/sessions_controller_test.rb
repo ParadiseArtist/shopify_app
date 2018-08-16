@@ -119,6 +119,17 @@ module ShopifyApp
       assert_redirected_to '/'
     end
 
+    test '#enable_cookies renders the correct template' do
+      get :enable_cookies, params: { shop: 'shop' }
+      assert_template 'sessions/enable_cookies'
+    end
+
+    test '#enable_cookies displays an error if no shop is provided' do
+      get :enable_cookies
+      assert_redirected_to ShopifyApp.configuration.root_url
+      assert_equal I18n.t('invalid_shop_url'), flash[:error]
+    end
+
     test '#callback should flash error when omniauth is not present' do
       get :callback, params: { shop: 'shop' }
       assert_equal flash[:error], 'Could not log in to Shopify store'
