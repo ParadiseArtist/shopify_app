@@ -10,17 +10,14 @@ module ShopifyApp
     end
 
     def shopify_session
-      if shop_session
-        clear_top_level_oauth_cookie
+      return redirect_to_login unless shop_session
+      clear_top_level_oauth_cookie
 
-        begin
-          ShopifyAPI::Base.activate_session(shop_session)
-          yield
-        ensure
-          ShopifyAPI::Base.clear_session
-        end
-      else
-        redirect_to_login
+      begin
+        ShopifyAPI::Base.activate_session(shop_session)
+        yield
+      ensure
+        ShopifyAPI::Base.clear_session
       end
     end
 
