@@ -35,6 +35,22 @@ class LoginProtectionTest < ActionController::TestCase
     ShopifyApp::SessionRepository.storage = ShopifyApp::InMemorySessionStore
   end
 
+  test '#index sets test cookie if embedded app' do
+    with_application_test_routes do
+      get :index
+      assert_equal true, session['shopify.cookies_persist']
+    end
+  end
+
+  test '#index doesn\'t set test cookie if non embedded app' do
+    with_application_test_routes do
+      ShopifyApp.configuration.embedded_app = false
+
+      get :index
+      assert_nil session['shopify.cookies_persist']
+    end
+  end
+
   test "#shop_session returns nil when session is nil" do
     with_application_test_routes do
       session[:shopify] = nil
