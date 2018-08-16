@@ -21,7 +21,7 @@ module ShopifyApp
       end
     end
 
-    def shop_session   
+    def shop_session
       return unless session[:shopify]
       @shop_session ||= ShopifyApp::SessionRepository.retrieve(session[:shopify])
     end
@@ -59,20 +59,12 @@ module ShopifyApp
 
     def login_url(no_cookie_redirect = false)
       url = ShopifyApp.configuration.login_url
+
       query_params = {}
+      query_params[:shop] = sanitized_params[:shop] if params[:shop].present?
+      query_params[:no_cookie_redirect] = true if no_cookie_redirect
 
-      if params[:shop].present?
-        query_params[:shop] = sanitized_params[:shop]
-      end
-
-      if no_cookie_redirect
-        query_params[:no_cookie_redirect] = true
-      end
-
-      if query_params.present?
-        url = "#{url}?#{query_params.to_query}"
-      end
-
+      url = "#{url}?#{query_params.to_query}" if query_params.present?
       url
     end
 
