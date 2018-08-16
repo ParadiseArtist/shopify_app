@@ -46,8 +46,8 @@ module ShopifyApp
 
       if redirect_for_cookie_access?
         fullpage_redirect_to enable_cookies_path(shop: sanitized_shop_name)
-      elsif previously_authenticated_at_top_level?
-        authenticate_in_iframe
+      elsif authenticate_in_context?
+        authenticate_in_context
       else
         authenticate_at_top_level
       end
@@ -58,7 +58,7 @@ module ShopifyApp
       redirect_to return_address
     end
 
-    def authenticate_in_iframe
+    def authenticate_in_context
       clear_top_level_oauth_cookie
       redirect_to "#{main_app.root_path}auth/shopify"
     end
@@ -68,7 +68,8 @@ module ShopifyApp
       fullpage_redirect_to login_url(true)
     end
 
-    def previously_authenticated_at_top_level?
+    def authenticate_in_context?
+      return true unless ShopifyApp.configuration.embedded_app?
       session['shopify.top_level_oauth']
     end
 
