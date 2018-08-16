@@ -5,7 +5,7 @@ module ShopifyApp
     class ShopifyDomainNotFound < StandardError; end
 
     included do
-      after_action :attempt_to_set_cookie if ShopifyApp.configuration.embedded_app?
+      after_action :set_test_cookie if ShopifyApp.configuration.embedded_app?
       rescue_from ActiveResource::UnauthorizedAccess, :with => :close_session
     end
 
@@ -111,7 +111,7 @@ module ShopifyApp
       end
     end
 
-    def attempt_to_set_cookie
+    def set_test_cookie
       session['shopify.cookies_persist'] = true
     end
 
