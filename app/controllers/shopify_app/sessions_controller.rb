@@ -14,7 +14,7 @@ module ShopifyApp
       authenticate
     end
 
-    def set_top_level_cookie
+    def enable_cookies
       @shop = sanitize_shop_param(params)
     end
 
@@ -45,7 +45,7 @@ module ShopifyApp
         session['shopify.omniauth_params'] = { shop: sanitized_shop_name }
 
         if redirect_for_cookie_access?
-          fullpage_redirect_to set_top_level_cookie_path(shop: sanitized_shop_name)
+          fullpage_redirect_to enable_cookies_path(shop: sanitized_shop_name)
         elsif session['shopify.top_level_oauth']
           clear_top_level_oauth_cookie
           redirect_to "#{main_app.root_path}auth/shopify"
