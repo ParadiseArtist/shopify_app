@@ -71,6 +71,7 @@ module ShopifyApp
 
     def authenticate_in_context?
       return true unless ShopifyApp.configuration.embedded_app?
+      return true if params[:no_cookie_redirect]
       session['shopify.top_level_oauth']
     end
 
